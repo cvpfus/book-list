@@ -42,6 +42,7 @@ export function DataTable<TData, TValue>({
                     key={header.id}
                     className={cn(
                       header.id.includes("no") ? "w-[50px]" : "",
+                      header.id.includes("actions") ? "w-[100px]" : "",
                     )}
                   >
                     {header.isPlaceholder

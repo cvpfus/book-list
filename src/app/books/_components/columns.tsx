@@ -2,6 +2,7 @@
 
 import { BookWithCategory } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
+import { ActionCell } from "./action-cell";
 
 export const columns: ColumnDef<BookWithCategory>[] = [
   {
@@ -28,11 +29,17 @@ export const columns: ColumnDef<BookWithCategory>[] = [
   {
     accessorKey: "publicationDate",
     header: "Publication Date",
-    cell: ({ row }) => new Date(row.original.publicationDate).toLocaleDateString("id-ID"),
+    cell: ({ row }) =>
+      new Date(row.original.publicationDate).toLocaleDateString("id-ID"),
   },
   {
     accessorKey: "category",
     header: "Category",
-    cell: ({ row }) => row.original.category.name,
+    cell: ({ row }) => row.original.category?.name ?? "-",
+  },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({ row }) => <ActionCell row={row} />,
   },
 ];
