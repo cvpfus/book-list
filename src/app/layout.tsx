@@ -10,7 +10,7 @@ const font = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Azura Books",
+  title: "Book List",
   description: "Manage books and book categories",
 };
 
