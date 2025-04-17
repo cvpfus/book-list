@@ -17,11 +17,13 @@ import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { addCategory } from "@/actions/category";
 
-interface CategoryFormProps {
+interface AddCategoryFormProps {
   setCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function CategoryForm({ setCategoryDialogOpen }: CategoryFormProps) {
+export function AddCategoryForm({
+  setCategoryDialogOpen,
+}: AddCategoryFormProps) {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof categorySchema>>({
@@ -67,7 +69,7 @@ export function CategoryForm({ setCategoryDialogOpen }: CategoryFormProps) {
         <div className="w-full flex justify-end">
           <Button type="submit" className="flex gap-2" disabled={loading}>
             {loading && <Loader2 className="animate-spin" />}
-            <span>Submit</span>
+            <span>Add</span>
           </Button>
         </div>
       </form>
