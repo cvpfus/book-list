@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
         {
           error: generateErrorMessages(result.error),
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       {
         error: "Failed to create book",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     const fromDateSearchParams = request.nextUrl.searchParams.get("fromDate");
     const toDateSearchParams = request.nextUrl.searchParams.get("toDate");
     const excludedCategoryIdsSearchParams = request.nextUrl.searchParams.getAll(
-      "excludedCategoryIds",
+      "excludedCategoryIds"
     );
 
     const bookFilter: BookFilter = {
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
         {
           error: generateErrorMessages(result.error),
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -93,9 +93,15 @@ export async function GET(request: NextRequest) {
     }
 
     if (bookFilter.fromDate && bookFilter.toDate) {
+      const fromDateStart = new Date(bookFilter.fromDate);
+      fromDateStart.setHours(0, 0, 0);
+
+      const toDateEnd = new Date(bookFilter.toDate);
+      toDateEnd.setHours(23, 59, 59);
+
       filters.publicationDate = {
-        gte: bookFilter.fromDate,
-        lte: bookFilter.toDate,
+        gte: fromDateStart,
+        lte: toDateEnd,
       };
     }
 
@@ -108,7 +114,7 @@ export async function GET(request: NextRequest) {
   } catch (_) {
     return NextResponse.json(
       { error: "Failed to fetch books" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
