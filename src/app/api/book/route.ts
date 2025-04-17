@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
         author,
         publisher,
         publicationDate,
-        categoryId,
+        categoryId: categoryId ?? Prisma.skip,
       },
     });
 
