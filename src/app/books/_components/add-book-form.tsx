@@ -33,12 +33,12 @@ import { addBook } from "@/actions/book";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
-interface BookFormProps {
+interface AddBookFormProps {
   categories: Category[];
   setBookDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function BookForm({ categories, setBookDialogOpen }: BookFormProps) {
+export function AddBookForm({ categories, setBookDialogOpen }: AddBookFormProps) {
   const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof bookSchema>>({
@@ -218,7 +218,7 @@ export function BookForm({ categories, setBookDialogOpen }: BookFormProps) {
         <div className="w-full flex justify-end">
           <Button type="submit" className="flex gap-2" disabled={loading}>
             {loading && <Loader2 className="animate-spin" />}
-            <span>Submit</span>
+            <span>Add</span>
           </Button>
         </div>
       </form>

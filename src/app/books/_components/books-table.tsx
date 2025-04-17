@@ -7,6 +7,8 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -21,7 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { BookForm } from "./book-form";
+import { AddBookForm } from "./add-book-form";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useDebouncedCallback } from "use-debounce";
@@ -54,6 +56,18 @@ export function BooksTable({
       from: fromDate ? new Date(fromDate) : undefined,
       to: toDate ? new Date(toDate) : undefined,
     };
+  });
+  const [selectAll, setSelectAll] = useState(() => {
+    const excludedCategoryIds = searchParams.getAll("excludedCategoryIds");
+
+    if (
+      excludedCategoryIds.length === categories.length &&
+      categories.length > 0
+    ) {
+      return true;
+    }
+
+    return false;
   });
 
   const debounced = useDebouncedCallback((value: string) => {
@@ -91,6 +105,47 @@ export function BooksTable({
     }
   };
 
+  const handleCategorySelected = (selected: boolean, category: Category) => {
+    if (!selected) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.append("excludedCategoryIds", String(category.id));
+      setSearchParams(newSearchParams);
+
+      if (
+        newSearchParams.getAll("excludedCategoryIds").length ===
+        categories.length
+      ) {
+        setSelectAll(true);
+      }
+    } else {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete("excludedCategoryIds", String(category.id));
+      setSearchParams(newSearchParams);
+
+      if (newSearchParams.getAll("excludedCategoryIds").length === 0) {
+        setSelectAll(false);
+      }
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (!selectAll) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      categories.forEach((category) => {
+        newSearchParams.append("excludedCategoryIds", String(category.id));
+        setSearchParams(newSearchParams);
+        setSelectAll(true);
+      });
+    } else {
+      const newSearchParams = new URLSearchParams(searchParams);
+      categories.forEach((category) => {
+        newSearchParams.delete("excludedCategoryIds", String(category.id));
+        setSearchParams(newSearchParams);
+        setSelectAll(false);
+      });
+    }
+  };
+
   return (
     <div className="flex justify-center">
       <div className="max-w-6xl w-full flex flex-col gap-4">
@@ -98,7 +153,7 @@ export function BooksTable({
           <div className="flex gap-4 items-center">
             <Input
               placeholder="Search.."
-              className="w-80 self-start"
+              className="md:w-80 w-full self-start"
               defaultValue={query ?? ""}
               onChange={(e) => debounced(e.target.value)}
             />
@@ -107,7 +162,7 @@ export function BooksTable({
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-[240px] pl-3 text-left font-normal",
+                    "pl-3 text-left font-normal",
                     !dateRange && "text-muted-foreground",
                   )}
                 >
@@ -118,7 +173,7 @@ export function BooksTable({
                       locale: id,
                     })}`
                   ) : (
-                    <span>Filter books by date range</span>
+                    <span className="hidden md:inline">Filter books by date range</span>
                   )}
                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
@@ -138,10 +193,29 @@ export function BooksTable({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline">
-                  <ListIcon /> Categories <ChevronDown />
+                  <ListIcon />
+                  <span className="hidden md:inline"> Categories </span>
+                  <ChevronDown />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
+                {categories.length > 0 && (
+                  <>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleSelectAll}
+                    >
+                      {selectAll ? "Select All" : "Deselect All"}
+                    </Button>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                {categories.length === 0 && (
+                  <DropdownMenuLabel>
+                    <span>No categories.</span>
+                  </DropdownMenuLabel>
+                )}
                 {categories.map((category) => (
                   <DropdownMenuCheckboxItem
                     key={category.id}
@@ -151,25 +225,7 @@ export function BooksTable({
                         : !excludedCategoryIds.includes(String(category.id))
                     }
                     onCheckedChange={(value) => {
-                      if (!value) {
-                        const newSearchParams = new URLSearchParams(
-                          searchParams,
-                        );
-                        newSearchParams.append(
-                          "excludedCategoryIds",
-                          String(category.id),
-                        );
-                        setSearchParams(newSearchParams);
-                      } else {
-                        const newSearchParams = new URLSearchParams(
-                          searchParams,
-                        );
-                        newSearchParams.delete(
-                          "excludedCategoryIds",
-                          String(category.id),
-                        );
-                        setSearchParams(newSearchParams);
-                      }
+                      handleCategorySelected(value, category);
                     }}
                   >
                     {category.name}
@@ -182,7 +238,7 @@ export function BooksTable({
           <Dialog open={bookDialogOpen} onOpenChange={setBookDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline">
-                <Plus /> Add a Book
+                <Plus /> <span className="hidden md:inline">Add a Book</span>
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -192,7 +248,7 @@ export function BooksTable({
                   Fill in the form below to add a new book.
                 </DialogDescription>
               </DialogHeader>
-              <BookForm
+              <AddBookForm
                 categories={categories}
                 setBookDialogOpen={setBookDialogOpen}
               />
