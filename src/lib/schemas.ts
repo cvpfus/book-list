@@ -5,7 +5,7 @@ export const bookSchema = z.object({
     .string()
     .min(5, "Minimum 5 characters")
     .max(100, "Maximum 100 characters"),
-  pages: z.number().min(10, "Minimum 10 pages"),
+  pages: z.number().min(10, "Minimum 10 pages").max(1000, "Maximum 1000 pages"),
   author: z
     .string()
     .min(5, "Minimum 5 characters")
