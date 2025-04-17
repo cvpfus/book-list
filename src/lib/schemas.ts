@@ -10,7 +10,7 @@ export const bookSchema = z.object({
     .string()
     .min(5, "Minimum 5 characters")
     .max(35, "Maximum 35 characters")
-    .regex(/^[A-Za-z\s]+$/, "Invalid author name"),
+    .regex(/^[A-Za-z\s]+$/, "Author name can only contain letters and spaces"),
   publisher: z
     .string()
     .min(5, "Minimum 5 characters")
@@ -27,5 +27,12 @@ export const bookFilterSchema = z.object({
 });
 
 export const categorySchema = z.object({
-  name: z.string(),
+  name: z
+    .string()
+    .min(2, "Minimum 2 characters")
+    .max(35, "Maximum 35 characters")
+    .regex(
+      /^[A-Za-z\s]+$/,
+      "Category name can only contain letters and spaces",
+    ),
 });
