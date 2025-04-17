@@ -16,7 +16,7 @@ export const bookSchema = z.object({
     .min(5, "Minimum 5 characters")
     .max(35, "Maximum 35 characters"),
   publicationDate: z.coerce.date(),
-  categoryId: z.number(),
+  categoryId: z.number().optional(),
 });
 
 export const bookFilterSchema = z.object({
