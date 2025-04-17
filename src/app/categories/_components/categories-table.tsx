@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CategoryForm } from "./category-form";
+import { AddCategoryForm } from "./add-category-form";
 import { Category } from "@prisma/client";
 import { DataTable } from "@/app/_components/data-table";
 import { columns } from "./columns";
@@ -15,7 +15,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-export function CategoriesTable({ categories }: { categories: Category[] }) {
+export function CategoriesTable({
+  categories,
+}: {
+  categories: Category[];
+}) {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
 
   return (
@@ -31,7 +35,7 @@ export function CategoriesTable({ categories }: { categories: Category[] }) {
             <DialogHeader>
               <DialogTitle>Add a Category</DialogTitle>
             </DialogHeader>
-            <CategoryForm setCategoryDialogOpen={setCategoryDialogOpen} />
+            <AddCategoryForm setCategoryDialogOpen={setCategoryDialogOpen} />
           </DialogContent>
         </Dialog>
         <DataTable columns={columns} data={categories} />
