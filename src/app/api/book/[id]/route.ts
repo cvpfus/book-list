@@ -34,7 +34,7 @@ export async function PATCH(
     }
 
     const existingBook = await prisma.book.findUnique({
-      where: { id: Number(id) },
+      where: { id },
     });
 
     if (!existingBook) {
